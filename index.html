@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercici Interactiu - Moviments de la Terra</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      font-family: "Fedra Sans", sans-serif;
+    }
+
+    body.no-scroll {
+      overflow: hidden;
+      /* disables scrolling */
+      height: 100vh;
+    }
+
+
+    .screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 2vh;
+      box-sizing: border-box;
+      color: white;
+      background-color: #C8215D;
+      /* or appropriate background */
+      overflow-y: auto;
+      z-index: 10;
+      /* ensure above */
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .intro {
+      background-color: #c8215d;
+      color: white;
+    }
+
+    .intro h1 {
+      font-size: 4vh;
+      margin-bottom: 2vh;
+      line-height: 1.2;
+      /* or 1.3 */
+    }
+
+    .intro p {
+      font-size: 2.5vh;
+      margin-bottom: 4vh;
+      line-height: 1.4;
+    }
+
+    .btn {
+      background-color: #fff;
+      color: #c8215d;
+      padding: 2vh 4vh;
+      /* Bigger padding */
+      font-size: 2.5vh;
+      /* Bigger font */
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      /* More shadow for pop */
+    }
+
+    .btn:hover {
+      background-color: #c8215d;
+      color: white;
+      border: 2px solid white;
+    }
+
+    /* Updated exerciseScreen styles */
+    #exerciseScreen {
+      display: none;
+      background-color: #f5f5f5;
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+
+      display: flex;
+      justify-content: center;
+      /* vertical center */
+      align-items: center;
+      /* horizontal center */
+      text-align: center;
+      position: relative;
+      /* for back button */
+      overflow: hidden;
+      /* hide scrollbar on container */
+    }
+
+    /* New wrapper to enable scrolling inside */
+    .exercise-content {
+      max-height: 80vh;
+      overflow-y: auto;
+      width: 100%;
+      max-width: 600px;
+      padding-right: 10px;
+      /* give some space for scrollbar */
+    }
+
+    h2 {
+      text-align: center;
+      color: #d81b60;
+    }
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-left: 20px;
+      margin-bottom: 5px;
+      color: black;
+      /* ensure readable text */
+    }
+
+    #result {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #c8215d;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #bbb;
+      color: #333;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Intro Slide -->
+  <div class="screen intro active" id="introScreen">
+    <h1>MARCA LA REPOSTA CORRECTA</h1>
+    <p>Aprendrem sobre la rotació, els fusos horaris i els equinoccis/solsticis amb aquest qüestionari interactiu.</p>
+    <button class="btn" onclick="startExercise()">Començar</button>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div id="exerciseScreen">
+    <button class="btn back-btn" onclick="goBack()">← Torna enrere</button>
+    <!-- Wrap content in exercise-content for scrolling -->
+    <div class="exercise-content">
+      <h2>MARCA LA RESPOSTA CORRECTA</h2>
+
+      <form id="quizForm">
+        <div class="question">
+          <p>1. La Terra gira sobre el seu eix de rotació:</p>
+          <label><input type="radio" name="q1" value="a" /> a) d’est a oest.</label>
+          <label><input type="radio" name="q1" value="b" /> b) d’oest a est.</label>
+        </div>
+
+        <div class="question">
+          <p>2. El moviment de rotació fa que:</p>
+          <label><input type="radio" name="q2" value="a" /> a) s’alternin el dia i la nit.</label>
+          <label><input type="radio" name="q2" value="b" /> b) s’alternin les estacions de l’any.</label>
+        </div>
+
+        <div class="question">
+          <p>3. El meridià de referència per comptar els fusos horaris és:</p>
+          <label><input type="radio" name="q3" value="a" /> a) l’equador.</label>
+          <label><input type="radio" name="q3" value="b" /> b) el meridià de Greenwich.</label>
+        </div>
+
+        <div class="question">
+          <p>4. Durant el solstici els raigs de sol cauen perpendicularment:</p>
+          <label><input type="radio" name="q4" value="a" /> a) sobre un hemisferi.</label>
+          <label><input type="radio" name="q4" value="b" /> b) sobre l’equador.</label>
+        </div>
+
+        <div class="question">
+          <p>5. Durant l’equinocci el dia i la nit:</p>
+          <label><input type="radio" name="q5" value="a" /> a) tenen la mateixa durada a tot el planeta.</label>
+          <label><input type="radio" name="q5" value="b" /> b) a l’hemisferi nord el dia és més llarg.</label>
+        </div>
+
+        <button type="button" class="btn" onclick="checkAnswers()">Comprova</button>
+      </form>
+
+      <p id="result"></p>
+    </div>
+  </div>
+
+  <script>
+    function startExercise() {
+      const elem = document.documentElement;
+
+      // Fullscreen request (cross-browser)
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen(); // Safari
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen(); // IE11
+      }
+
+      document.getElementById("introScreen").classList.remove("active");
+      document.getElementById("exerciseScreen").style.display = "flex"; // use flex here to keep flex styles
+    }
+
+    function goBack() {
+      // Exit fullscreen (cross-browser)
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen(); // Safari
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen(); // IE11
+      }
+
+      document.getElementById("introScreen").classList.add("active");
+      document.getElementById("exerciseScreen").style.display = "none";
+    }
+
+    function checkAnswers() {
+      const answers = {
+        q1: "b",
+        q2: "a",
+        q3: "b",
+        q4: "a",
+        q5: "a",
+      };
+
+      let score = 0;
+
+      for (let key in answers) {
+        const correctValue = answers[key];
+        const radios = document.querySelectorAll(`input[name="${key}"]`);
+        radios.forEach((radio) => {
+          const label = radio.parentElement;
+          label.style.color = "black"; // reset
+
+          if (radio.value === correctValue) {
+            label.style.color = "green"; // correct answer highlighted
+          }
+
+          if (radio.checked && radio.value === correctValue) {
+            score++;
+          }
+        });
+      }
+
+      document.getElementById("result").textContent = `Has encertat ${score} de 5 preguntes.`;
+    }
+  </script>
+</body>
+
+</html>
